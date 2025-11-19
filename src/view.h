@@ -19,12 +19,14 @@ class View : public QWidget {
   void onSaveImage();
   void updateImageLabel();
   void updateImageFromPicture();
+  void applyThreePassFilter();
 
   QPushButton *btnLoad;
   QPushButton *btnSave;
   QPushButton *btnCreateTest;
   QPushButton *btnAddNoise;
   QPushButton *btnFilter;
+  QPushButton *btnThreePassFilter;
   QLabel *imageLabel;
 
   Picture picture;

@@ -14,6 +14,7 @@ View::View(QWidget *parent) : QWidget(parent) {
   btnCreateTest = new QPushButton("Создать тест");
   btnAddNoise = new QPushButton("Добавить шум 50%");
   btnFilter = new QPushButton("Применить медианный фильтр");
+  btnThreePassFilter = new QPushButton("Три прохода фильтра");
 
   imageLabel = new QLabel();
   imageLabel->setAlignment(Qt::AlignCenter);
@@ -26,6 +27,7 @@ View::View(QWidget *parent) : QWidget(parent) {
   buttonLayout->addWidget(btnCreateTest);
   buttonLayout->addWidget(btnAddNoise);
   buttonLayout->addWidget(btnFilter);
+  buttonLayout->addWidget(btnThreePassFilter);
   buttonLayout->addStretch();
 
   auto *mainLayout = new QHBoxLayout(this);
@@ -44,6 +46,7 @@ View::View(QWidget *parent) : QWidget(parent) {
     btnSave->setEnabled(true);
     btnAddNoise->setEnabled(true);
     btnFilter->setEnabled(true);
+    btnThreePassFilter->setEnabled(true);
   });
 
   connect(btnAddNoise, &QPushButton::clicked, [this]() {
@@ -60,9 +63,25 @@ View::View(QWidget *parent) : QWidget(parent) {
     }
   });
 
+  connect(btnThreePassFilter, &QPushButton::clicked, [this]() {
+    if (picture.isValid()) {
+      applyThreePassFilter();
+      updateImageFromPicture();
+    }
+  });
+
   btnSave->setEnabled(false);
   btnAddNoise->setEnabled(false);
   btnFilter->setEnabled(false);
+  btnThreePassFilter->setEnabled(false);
+}
+
+void View::applyThreePassFilter() {
+  if (!picture.isValid()) return;
+
+  for (int i = 0; i < 3; i++) {
+    picture.applyVerticalMedian5x1();
+  }
 }
 
 void View::onLoadImage() {
@@ -90,6 +109,7 @@ void View::onLoadImage() {
   btnSave->setEnabled(true);
   btnAddNoise->setEnabled(true);
   btnFilter->setEnabled(true);
+  btnThreePassFilter->setEnabled(true);
 }
 
 void View::onSaveImage() {
